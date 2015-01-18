@@ -67,6 +67,12 @@ This may get expanded and/or modified in the future."
 (defun therapy-run-all-tests ()
   "Find all unit-tests for the current package and run them."
   (interactive)
+
+  (unless (buffer-file-name)
+    (error
+     (format "No directory associated with the buffer %s. Unable to search for project root."
+             (current-buffer))))
+
   (let* ((buffer-dir (f-dirname (buffer-file-name)))
          (root-dir (therapy-find-project-root buffer-dir)))
     (unless root-dir (error "No project root detected!"))
