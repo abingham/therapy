@@ -91,8 +91,8 @@ that doesn't contain __init__.py which, if found, is the project
 root.
 
 This may get expanded and/or modified in the future."
-  (or (therapy--find-setup-py start-dir)
-      (therapy--find-no-init start-dir)))
+  (or (therapy--find-setup-py)
+      (therapy--find-no-init)))
 
 ;; Testing tools
 
@@ -113,29 +113,19 @@ This may get expanded and/or modified in the future."
 
 ;; Utility/infrastructure
 
-(defun therapy--parent-dirs (dir)
-  "Find all parent directories of DIR.
-
-Returns a list of directories.  If DIR is not nil then the first
-entry in the list is DIR."
-  (if dir
-    (cons dir (therapy--parent-dirs (f-dirname dir)))))
-
 (defun therapy--find-setup-py (dir)
   "Search DIR and its parents for setup.py.
 
 Returns the first directory containing setup.py, or nil."
-  (-first
-   (lambda (dir) (f-exists? (f-join dir "setup.py")))
-   (therapy--parent-dirs dir)))
+  (locate-dominating-file start-dir "setup.py"))
 
 (defun therapy--find-no-init (dir)
   "Search DIR and its parents for directories without __init__.py.
 
 Returns the first directory not containing __init__.py, or nil."
-  (-first
-   (lambda (dir) (not (f-exists? (f-join dir "__init__.py"))))
-   (therapy--parent-dirs dir)))
+  (locate-dominating-file
+   dir
+   (lambda (d) (not (f-exists? (f-join d "__init__.py"))))))
 
 (provide 'therapy)
 
