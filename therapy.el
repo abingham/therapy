@@ -33,17 +33,14 @@
   "Call this when the Python interpreter is changed.
 
 This will run the correct hooks for the new version."
-  (if (string-equal "3" (therapy--python-major-version))
+  (if (string-equal "3" (therapy-python-major-version python-shell-interpreter))
       (run-hooks 'therapy-python3-hooks)
     (run-hooks 'therapy-python2-hooks)))
 
-(defun therapy--python-major-version ()
-  "Find major version of current Python interpreter.
-
-This runs `python-shell-interpreter' to determine the current
-major version."
+(defun therapy-python-major-version (interpreter)
+  "Find major version of INTERPRETER, a Python interpreter command."
   (let* ((program "\"import sys; print(sys.version_info.major)\"")
-         (command (format "%s -c %s" python-shell-interpreter program))
+         (command (format "%s -c %s" interpreter program))
          (results (shell-command-to-string command)))
     ;; The output has the major version in the firt character.
     (substring results 0 1)))
