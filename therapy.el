@@ -73,6 +73,14 @@ This will run the correct hooks for the new version."
       (run-hooks 'therapy-python3-hooks)
     (run-hooks 'therapy-python2-hooks)))
 
+(defun therapy-set-python-interpreter (cmd)
+  "Set the `python-shell-interpreter' variable to CMD and run the hooks."
+  (interactive
+   (list
+    (read-shell-command "Interpreter command: ")))
+  (set-variable 'python-shell-interpreter cmd)
+  (therapy-interpreter-changed))
+
 (defun therapy-python-major-version (interpreter)
   "Find major version of INTERPRETER, a Python interpreter command."
   (let* ((program "\"import sys; print(sys.version_info.major)\"")
