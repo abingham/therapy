@@ -68,6 +68,7 @@
   "Call this when the Python interpreter is changed.
 
 This will run the correct hooks for the new version."
+  (interactive)
   (if (string-equal "3" (therapy-python-major-version python-shell-interpreter))
       (run-hooks 'therapy-python3-hooks)
     (run-hooks 'therapy-python2-hooks)))
