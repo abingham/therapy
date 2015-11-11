@@ -5,7 +5,7 @@
 ;; Author: Austin Bingham <austin.bingham@gmail.com>
 ;; Version: 0.2
 ;; URL: https://github.com/abingham/therapy
-;; Package-Requires: ((emacs "24") (dash "2.10.0") (f "0.17.2"))
+;; Package-Requires: ((emacs "24"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -64,8 +64,6 @@
 
 ;;; Code:
 
-(require 'dash)
-(require 'f)
 (require 'python)
 
 (defgroup therapy nil
