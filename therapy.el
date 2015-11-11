@@ -81,6 +81,7 @@
   :group 'therapy
   :type 'hook)
 
+;;;###autoload
 (defun therapy-interpreter-changed ()
   "Call this when the Python interpreter is changed.
 
@@ -90,6 +91,7 @@ This will run the correct hooks for the new version."
       (run-hooks 'therapy-python3-hooks)
     (run-hooks 'therapy-python2-hooks)))
 
+;;;###autoload
 (defun therapy-set-python-interpreter (cmd)
   "Set the `python-shell-interpreter' variable to CMD and run the hooks."
   (interactive
