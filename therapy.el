@@ -1,9 +1,9 @@
-;;; therapy.el --- Useful Python stuff
+;;; therapy.el --- Hooks for managing multiple Python major version.
 ;;
 ;; Copyright (c) 2015 Austin Bingham
 ;;
 ;; Author: Austin Bingham <austin.bingham@gmail.com>
-;; Version: 0.1
+;; Version: 0.2
 ;; URL: https://github.com/abingham/therapy
 ;; Package-Requires: ((emacs "24") (dash "2.10.0") (f "0.17.2"))
 ;;
@@ -15,8 +15,30 @@
 ;;
 ;; Description:
 ;;
-;; therapy is a suite of functionality that improves Python
-;; development in Emacs.
+;; Therapy is fundamentally a set of hooks which get executed when the major
+;; version of your configured Python interpreter changes. If you regularly need
+;; to switch between Python major version in an Emacs session, this is for you!
+;;
+;; A typical situation where therapy can come in handy is if you've got Python2
+;; and Python3 system installations. In this case, certain tools like flake8 and
+;; ipython can have different names depending on the major version of Python
+;; you're using: flake8 vs. flake8-3 and ipython vs. ipython3, respectively.
+;; Since Emacs can use these tools, you need to be able to tell Emacs which
+;; commands to use in which situations. Therapy gives you hooks for doing just
+;; this.
+;;
+;; The basic approach is that you add hooks to the `therapy-python2-hooks' and
+;; `therapy-python3-hooks' lists. Your hooks will be called when therapy detects
+;; that the Python major version has changed, and your hook functions can do
+;; things like set the flake8 command, update the `python-shell-interpreter'
+;; variable, and so forth.
+;;
+;; But how does therapy know when the Python major version has changed? It
+;; doesn't, really. You have to tell it by calling
+;; `therapy-interpreter-changed'. This tells therapy to run the hooks; it will
+;; detect the configured major version and run the appropriate hooks.
+;; Alternatively, you can call `therapy-set-python-interpreter' which a) sets
+;; `python-shell-interpreter' and b) calls the hooks.
 ;;
 ;;; License:
 ;;
@@ -47,7 +69,7 @@
 (require 'python)
 
 (defgroup therapy nil
-  "Useful Python stuff."
+  "Extension for switching between Python2 and Python3 configurations."
   :group 'tools
   :group 'programming)
 
@@ -60,9 +82,6 @@
   "Hook for when Python 3 is activated."
   :group 'therapy
   :type 'hook)
-
-(defvar therapy-test-command "python -m nose"
-  "The command used to execute tests from the project root.")
 
 (defun therapy-interpreter-changed ()
   "Call this when the Python interpreter is changed.
@@ -88,53 +107,6 @@ This will run the correct hooks for the new version."
          (results (shell-command-to-string command)))
     ;; The output has the major version in the firt character.
     (substring results 0 1)))
-
-(defun therapy-find-project-root (start-dir)
-  "Find the likely Python project root for START-DIR.
-
-Since there's no strict definition of a Python project, this
-makes a few educated guesses.  It first looks for a directory
-containing setup.py.  If it finds one, it assumes that this is
-the root.  Otherwise, it looks for the first parent directory
-that doesn't contain __init__.py which, if found, is the project
-root.
-
-This may get expanded and/or modified in the future."
-  (or (therapy--find-setup-py)
-      (therapy--find-no-init)))
-
-;; Testing tools
-
-(defun therapy-run-all-tests ()
-  "Find all unit-tests for the current package and run them."
-  (interactive)
-
-  (unless (buffer-file-name)
-    (error
-     (format "No directory associated with the buffer %s. Unable to search for project root."
-             (current-buffer))))
-
-  (let* ((buffer-dir (f-dirname (buffer-file-name)))
-         (root-dir (therapy-find-project-root buffer-dir)))
-    (unless root-dir (error "No project root detected!"))
-    (let ((default-directory (file-name-as-directory root-dir)))
-      (compile therapy-test-command))))
-
-;; Utility/infrastructure
-
-(defun therapy--find-setup-py (dir)
-  "Search DIR and its parents for setup.py.
-
-Returns the first directory containing setup.py, or nil."
-  (locate-dominating-file start-dir "setup.py"))
-
-(defun therapy--find-no-init (dir)
-  "Search DIR and its parents for directories without __init__.py.
-
-Returns the first directory not containing __init__.py, or nil."
-  (locate-dominating-file
-   dir
-   (lambda (d) (not (f-exists? (f-join d "__init__.py"))))))
 
 (provide 'therapy)
 
