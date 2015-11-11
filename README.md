@@ -20,7 +20,7 @@ that the Python major version has changed, and your hook functions can do things
 like set the `flake8` command, update the `python-shell-interpreter` variable,
 and so forth.
 
-But how does `therapy` know when the Python major version has changed? It
+**But how does `therapy` know when the Python major version has changed?** It
 doesn't, really. You have to tell it by calling `therapy-interpreter-changed`.
 This tells therapy to run the hooks; it will detect the configured major version
 and run the appropriate hooks. Alternatively, you can call
