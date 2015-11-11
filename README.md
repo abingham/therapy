@@ -30,7 +30,7 @@ calls the hooks.
 ## For example..
 Here's how you can add hooks that update the `flake8` command
 for major version switches.
-```Emacs Lisp
+```lisp
 ;; use flake8 for python2
 (add-hook 'therapy-python2-hook
     (lambda () (setq flycheck-python-pyflakes-executable "flake8"))
@@ -41,7 +41,7 @@ for major version switches.
 ```
 
 Now if you want to switch to Python3 and run the hooks, you can do this:
-```Emacs Lisp
+```lisp
 (therapy-set-python-interpreter "/path/to/new/python")
 ```
 
@@ -54,7 +54,7 @@ If you use [`pyvenv`](https://github.com/jorgenschaefer/pyvenv) to work with
 virtual environments, you might want to have `therapy` run its hooks whenever
 the virtual environment changes. You can do this easily with
 `pyvenv-post-activate-hooks`:
-```Emacs Lisp
+```lisp
 (defun my-pyvenv-hook ()
   "Hook for when we change virtual environments."
 
