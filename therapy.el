@@ -1,4 +1,4 @@
-;;; therapy.el --- Hooks for managing multiple Python major version.
+;;; therapy.el --- Hooks for managing multiple Python major versions
 ;;
 ;; Copyright (c) 2015 Austin Bingham
 ;;
